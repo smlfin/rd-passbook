@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sangeeth FinTrack - The Digital Passbook</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="login-container" class="container">
+        <h1 class="logo-text">Sangeeth FinTrack</h1>
+        <h2 class="sub-heading">The Digital Passbook</h2>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <div class="show-password-container">
+                    <input type="checkbox" id="show-password">
+                    <label for="show-password">Show Password</label>
+                </div>
+                <p class="instructions">Password is the first 4 letters of your name (not case-sensitive) followed by the last 4 digits of your mobile number. (e.g., 'SANG3210')</p>
+            </div>
+            <button type="submit" class="btn">Login</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
+    </div>
+
+    <div id="passbook-container" class="container hidden">
+        <header class="passbook-header">
+            <h1 class="logo-text">Sangeeth FinTrack</h1>
+            <h2 class="sub-heading">The Digital Passbook</h2>
+            <button id="logout-btn" class="btn">Logout</button>
+        </header>
+        
+        <div id="customer-info" class="customer-info">
+            </div>
+
+        <div id="account-selector-container" class="hidden">
+            <h3>Select your RD account</h3>
+            <select id="account-selector"></select>
+        </div>
+
+        <div id="passbook-content" class="passbook-content hidden">
+            <div class="account-details-grid">
+                <div class="detail-box">
+                    <span class="label">RD NUMBER</span>
+                    <span id="rd-number" class="value"></span>
+                </div>
+                <div class="detail-box">
+                    <span class="label">START DATE</span>
+                    <span id="start-date" class="value"></span>
+                </div>
+                <div class="detail-box">
+                    <span class="label">Maturity Date</span>
+                    <span id="maturity-date" class="value"></span>
+                </div>
+                 <div class="detail-box">
+                    <span class="label">Instalment Amount</span>
+                    <span id="instalment-amount" class="value"></span>
+                </div>
+                <div class="detail-box">
+                    <span class="label">Number of Instalment</span>
+                    <span id="total-emi" class="value"></span>
+                </div>
+                <div class="detail-box interactive">
+                    <span class="label">No of EMI paid</span>
+                    <span id="paid-emi" class="value interactive-link"></span>
+                </div>
+                <div class="detail-box">
+                    <span class="label">Remaining EMI</span>
+                    <span id="remaining-emi" class="value"></span>
+                </div>
+                <div class="detail-box">
+                    <span class="label">Balance in RD account</span>
+                    <span id="rd-balance" class="value"></span>
+                </div>
+                <div class="detail-box" id="due-status-box">
+                    <span class="label">Due</span>
+                    <span id="due-status" class="value"></span>
+                </div>
+                <div class="detail-box hidden" id="due-amount-box">
+                    <span class="label">Due amount</span>
+                    <span id="due-amount" class="value"></span>
+                </div>
+                <div class="detail-box">
+                    <span class="label">Maturity Amount</span>
+                    <span id="maturity-amount" class="value"></span>
+                </div>
+                <p class="maturity-note">This is an indicative maturity value, NOn payment or delayed payment of instalments on due dates will affect the final maturity amount</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="emi-history-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h4>Payment History</h4>
+            <ul id="emi-list"></ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

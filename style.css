@@ -1,0 +1,246 @@
+:root {
+    --primary-color: #007BFF;
+    --primary-hover: #0056b3;
+    --background-color: #f0f2f5;
+    --card-background: #ffffff;
+    --dark-text: #333333;
+    --light-text: #6c757d;
+    --has-due-color: #dc3545;
+    --no-due-color: #28a745;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background-color: var(--card-background);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.hidden {
+    display: none;
+}
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.sub-heading {
+    font-size: 1rem;
+    color: var(--light-text);
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--dark-text);
+    font-weight: 600;
+}
+
+input[type="tel"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    color: var(--dark-text);
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.error-message {
+    color: var(--has-due-color);
+    margin-top: 15px;
+    font-size: 0.9rem;
+}
+
+.passbook-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.passbook-header .logo-text,
+.passbook-header .sub-heading {
+    margin: 0;
+}
+
+.customer-info {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.customer-info h3 {
+    font-size: 1.4rem;
+    color: var(--dark-text);
+    margin: 0;
+}
+
+.account-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.detail-box {
+    background-color: var(--background-color);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.detail-box .label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--light-text);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.detail-box .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.interactive .value {
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.value.has-due {
+    color: var(--has-due-color);
+}
+
+.value.no-due {
+    color: var(--no-due-color);
+}
+
+.show-password-container {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+.show-password-container input {
+    width: auto;
+    margin-right: 0.5rem;
+}
+.show-password-container label {
+    font-weight: 400;
+    color: var(--light-text);
+}
+.instructions {
+    font-size: 0.8rem;
+    color: var(--light-text);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+    text-align: left;
+}
+
+/* Modal/Pop-up Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    color: var(--dark-text);
+}
+
+.modal-content h4 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--light-text);
+}
+
+.emi-list {
+    list-style-type: none;
+    padding: 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.emi-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.emi-detail-balance {
+    font-size: 0.9em;
+    color: #888;
+}
+
+.hidden {
+    display: none;
+}
