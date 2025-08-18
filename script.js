@@ -10,7 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const accountSelector = document.getElementById('account-selector');
     const passbookContent = document.getElementById('passbook-content');
     const logoutBtn = document.getElementById('logout-btn');
-    const paidEmiLink = document.getElementById('paid-emi');
+
+    const paidEmiLabel = document.getElementById('paid-emi-label');
+    const remainingEmiLabel = document.getElementById('remaining-emi-label');
+    const paidEmiBar = document.getElementById('paid-emi-bar');
+    const remainingEmiBar = document.getElementById('remaining-emi-bar');
+    const paidEmiCount = document.getElementById('paid-emi-count');
+    const remainingEmiCount = document.getElementById('remaining-emi-count');
+
 
     const modal = document.getElementById('emi-history-modal');
     const closeModalBtn = document.querySelector('.close-btn');
@@ -143,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    paidEmiLink.addEventListener('click', () => {
+    // New event listeners for the paid and remaining EMI labels
+    paidEmiLabel.addEventListener('click', () => {
         if (currentRDNumber) {
             const account = currentAccounts.find(acc => acc["RD NUMBER"] === currentRDNumber);
             if (account) {
@@ -151,6 +159,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 populateEmiHistory(history);
                 modal.classList.remove('hidden');
             }
+        }
+    });
+
+    remainingEmiLabel.addEventListener('click', () => {
+        const account = currentAccounts.find(acc => acc["RD NUMBER"] === currentRDNumber);
+        if (account) {
+            const paidInstallmentString = String(account.PAID_INSATLMET);
+            const parts = paidInstallmentString.split('/');
+            const paidEmi = parseInt(parts[0], 10);
+            const totalEmi = parseInt(parts[1], 10);
+            const remainingEmi = totalEmi - paidEmi;
+            alert(`You have ${remainingEmi} remaining EMIs to pay.`);
         }
     });
 
@@ -210,16 +230,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalEmi = parseInt(parts[1], 10);
         const remainingEmi = totalEmi - paidEmi;
 
-        document.getElementById('paid-emi').textContent = isNaN(paidEmi) ? 'N/A' : paidEmi;
+        // Update the progress tile values
+        paidEmiCount.textContent = isNaN(paidEmi) ? 'N/A' : paidEmi;
+        remainingEmiCount.textContent = (isNaN(remainingEmi) || remainingEmi < 0) ? 'N/A' : remainingEmi;
+        const paidPercentage = totalEmi > 0 ? (paidEmi / totalEmi) * 100 : 0;
+        paidEmiBar.style.width = `${paidPercentage}%`;
+        
         document.getElementById('total-emi').textContent = isNaN(totalEmi) ? 'N/A' : totalEmi;
-        document.getElementById('remaining-emi').textContent = (isNaN(remainingEmi) || remainingEmi < 0) ? 'N/A' : remainingEmi;
         document.getElementById('rd-balance').textContent = `₹${account["PAID AMOUNT"].toLocaleString('en-IN')}`;
 
-        const dueStatusBox = document.getElementById('due-status-box');
-        const dueAmountBox = document.getElementById('due-amount-box');
         const dueStatus = document.getElementById('due-status');
         const dueAmount = document.getElementById('due-amount');
-
         if (account.DUE_STATUS > 0) {
             dueStatus.textContent = account.DUE_STATUS;
             dueStatus.classList.remove('no-due');
@@ -227,16 +248,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const dueAmountValue = account.DUE_AMOUNT;
             if (dueAmountValue > 0) {
                 dueAmount.textContent = `₹${dueAmountValue.toLocaleString('en-IN')}`;
-                dueAmountBox.classList.remove('hidden');
             } else {
                 dueAmount.textContent = 'N/A';
-                dueAmountBox.classList.remove('hidden');
             }
         } else {
             dueStatus.textContent = '0';
             dueStatus.classList.remove('has-due');
             dueStatus.classList.add('no-due');
-            dueAmountBox.classList.add('hidden');
+            dueAmount.textContent = 'N/A';
         }
 
         const maturityAmount = calculateMaturity(instalmentAmount, totalEmi);
