@@ -267,28 +267,133 @@ select:focus {
 }
 
 
-/* Modal/Pop-up Styles */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+/* New Styles for the Progress Tile */
+.progress-tile {
+    background-color: var(--primary-color);
+    grid-column: 1 / -1;
+    padding: 30px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(5px);
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
 }
 
+.progress-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.progress-info {
+    text-align: left;
+}
+
+.progress-info .label {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.progress-info .value {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.progress-container {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+}
+
+.progress-segment {
+    height: 100%;
+    transition: width 0.5s ease;
+}
+
+.paid-emi-segment {
+    background-color: var(--primary-light);
+}
+
+.remaining-emi-segment {
+    background-color: transparent;
+}
+
+.progress-labels {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.progress-labels .interactive {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.progress-labels .interactive:hover {
+    color: var(--primary-light);
+}
+
+.remaining-emi-label {
+    text-align: right;
+}
+
+.paid-emi-label {
+    text-align: left;
+}
+
+/* New combined tile styling */
+.combined-tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+}
+.combined-info {
+    margin-bottom: 10px;
+}
+
+.combined-info:last-child {
+    margin-bottom: 0;
+}
+
+/* Modal/Pop-up Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+/* This is the crucial addition */
 .hidden {
     display: none;
 }
 
 .modal-content {
     background-color: var(--card-background);
-    padding: 30px;
+    padding: 0;
     border-radius: 16px;
     width: 90%;
     max-width: 500px;
@@ -296,6 +401,7 @@ select:focus {
     position: relative;
     color: var(--dark-text);
     animation: fadeIn 0.4s ease-out;
+    overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -309,26 +415,35 @@ select:focus {
     }
 }
 
-.modal-content h4 {
-    margin-top: 0;
+.modal-header {
+    background-color: var(--primary-color);
+    padding: 20px 30px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header h4 {
+    margin: 0;
     font-size: 1.6rem;
     font-weight: 700;
-    text-align: center;
-    margin-bottom: 20px;
-    color: var(--primary-color);
 }
 
 .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
     font-size: 2.2rem;
     cursor: pointer;
-    color: var(--light-text);
-    transition: color 0.3s;
+    color: white;
+    transition: transform 0.3s ease;
 }
+
 .close-btn:hover {
-    color: var(--dark-text);
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 30px;
 }
 
 .emi-list {
@@ -337,30 +452,34 @@ select:focus {
     max-height: 400px;
     overflow-y: auto;
     margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .emi-list li {
-    padding: 15px;
-    border-bottom: 1px solid #ECEFF1;
+    background-color: var(--background-color);
+    padding: 15px 20px;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 1rem;
     font-weight: 500;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s;
+    border: 1px solid var(--border-color);
 }
 
 .emi-list li:hover {
-    background-color: #F5F7F9;
-}
-.emi-list li:last-child {
-    border-bottom: none;
+    background-color: #E6EEF3;
+    transform: translateY(-2px);
 }
 
 .emi-detail-balance {
     font-size: 0.9em;
-    color: #889A9C;
+    color: var(--light-text);
     font-weight: 400;
+    text-align: right;
 }
 
 @media (max-width: 650px) {
@@ -385,5 +504,13 @@ select:focus {
     }
     .detail-box .value {
         font-size: 1.5rem;
+    }
+    .modal-content {
+        width: 95%;
+    }
+    .emi-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
     }
 }
