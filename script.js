@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ✅ Ensure modal always starts hidden
     modal.classList.add('hidden');
 
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTxcZ5BVpz-jvCQze4msaEqv1uSUTS-Z-mulCPYUU9xvh0_8R4aDoMmOIMclJQbIeeVWAtA9qkyJ8Vv/pub?gid=643936536&single=true&output=csv';
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/18K6X1q30z7zvi6zrOrrSWZSJpPULhP4INiMnknyVC9A/export?format=csv&gid=643936536';
 
     let allAccounts = [];
     let currentAccounts = [];
@@ -293,3 +293,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
