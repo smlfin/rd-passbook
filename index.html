@@ -1,151 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sangeeth FinTrack - The Digital Passbook</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        /* Maintenance Overlay Styles */
-        .maintenance-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            text-align: center;
-            font-family: 'Poppins', sans-serif;
-        }
-        .maintenance-overlay h1 { color: #2c3e50; margin-bottom: 10px; }
-        .maintenance-overlay p { color: #7f8c8d; font-size: 1.1rem; }
-        /* Hide original content while updating */
-        .content-hidden { display: none !important; }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Sangeeth FinTrack – The Digital Passbook</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-    <div class="maintenance-overlay">
+    <!-- ================= LOGIN ================= -->
+    <div id="login-container" class="container">
         <h1 class="logo-text">Sangeeth FinTrack</h1>
-        <div style="font-size: 50px; margin-bottom: 20px;">🛠️</div>
-        <h2>Site is undergoing updation</h2>
-        <p>We'll be back soon! Thank you for your patience.</p>
+        <h2 class="sub-heading">The Digital Passbook</h2>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    required
+                />
+
+                <div class="show-password-container">
+                    <input type="checkbox" id="show-password" />
+                    <label for="show-password">Show Password</label>
+                </div>
+
+                <p class="instructions">
+                    Password is the first 4 letters of your name (not case-sensitive)
+                    followed by the last 4 digits of your mobile number.
+                    <br>(Example: <strong>SANG3210</strong>)
+                </p>
+            </div>
+
+            <button type="submit" class="btn">Login</button>
+            <p id="error-message" class="error-message"></p>
+        </form>
     </div>
 
-    <div class="content-hidden">
-        <div id="login-container" class="container">
-            <h1 class="logo-text">Sangeeth FinTrack</h1>
-            <h2 class="sub-heading">The Digital Passbook</h2>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Password" required>
-                    <div class="show-password-container">
-                        <input type="checkbox" id="show-password">
-                        <label for="show-password">Show Password</label>
-                    </div>
-                    <p class="instructions">Password is the first 4 letters of your name (not case-sensitive) followed by the last 4 digits of your mobile number. (e.g., 'SANG3210')</p>
-                </div>
-                <button type="submit" class="btn">Login</button>
-                <p id="error-message" class="error-message"></p>
-            </form>
-        </div>
+    <!-- ================= PASSBOOK ================= -->
+    <div id="passbook-container" class="container hidden">
 
-        <div id="passbook-container" class="container hidden">
-            <header class="passbook-header">
+        <header class="passbook-header">
+            <div>
                 <h1 class="logo-text">Sangeeth FinTrack</h1>
                 <h2 class="sub-heading">The Digital Passbook</h2>
-                <button id="logout-btn" class="btn">Logout</button>
-            </header>
-            
-            <div id="customer-info" class="customer-info">
-                </div>
-
-            <div id="account-selector-container" class="hidden">
-                <h3>Select your RD account</h3>
-                <select id="account-selector"></select>
             </div>
+            <button id="logout-btn" class="btn">Logout</button>
+        </header>
 
-            <div id="passbook-content" class="passbook-content hidden">
-                <div class="account-details-grid">
-                    <div class="detail-box">
-                        <span class="label">RD NUMBER</span>
-                        <span id="rd-number" class="value"></span>
-                    </div>
-                    <div class="detail-box progress-tile">
-                        <div class="progress-details">
-                            <div class="progress-info">
-                                <span class="label">Instalment Amount</span>
-                                <span id="instalment-amount" class="value"></span>
-                            </div>
-                            <div class="progress-info">
-                                <span class="label">Maturity Amount</span>
-                                <span id="maturity-amount" class="value"></span>
-                            </div>
-                        </div>
-                        <div class="progress-container">
-                            <div class="progress-bar">
-                                <div id="paid-emi-bar" class="progress-segment paid-emi-segment"></div>
-                                <div id="remaining-emi-bar" class="progress-segment remaining-emi-segment"></div>
-                            </div>
-                            <div class="progress-labels">
-                                <span id="paid-emi-label" class="paid-emi-label interactive">Paid: <span id="paid-emi-count"></span></span>
-                                <span id="remaining-emi-label" class="remaining-emi-label interactive">Remaining: <span id="remaining-emi-count"></span></span>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="detail-box combined-tile">
-                        <div class="combined-info">
-                            <span class="label">START DATE</span>
-                            <span id="start-date" class="value"></span>
-                        </div>
-                        <div class="combined-info">
-                            <span class="label">Maturity Date</span>
-                            <span id="maturity-date" class="value"></span>
-                        </div>
-                        <div class="combined-info">
-                            <span class="label">Number of Instalment</span>
-                            <span id="total-emi" class="value"></span>
-                        </div>
-                    </div>
-                     <div class="detail-box">
-                        <span class="label">Balance in RD account</span>
-                        <span id="rd-balance" class="value"></span>
-                    </div>
-                    <div class="detail-box combined-tile">
-                        <div class="combined-info">
-                            <span class="label">Due</span>
-                            <span id="due-status" class="value"></span>
-                        </div>
-                        <div class="combined-info">
-                            <span class="label">Due amount</span>
-                            <span id="due-amount" class="value"></span>
-                        </div>
-                    </div>
-                    <p class="maturity-note">This is an indicative maturity value, NOn payment or delayed payment of instalments on due dates will affect the final maturity amount</p>
-                </div>
-            </div>
+        <!-- Customer Info -->
+        <div id="customer-info" class="customer-info"></div>
+
+        <!-- Account Selector -->
+        <div id="account-selector-container" class="hidden">
+            <h3>Select your RD account</h3>
+            <select id="account-selector"></select>
         </div>
 
-        <div id="emi-history-modal" class="modal-overlay hidden">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>Payment History</h4>
-                    <span class="close-btn">&times;</span>
+        <!-- Passbook Content -->
+        <div id="passbook-content" class="passbook-content hidden">
+
+            <div class="account-details-grid">
+
+                <div class="detail-box">
+                    <span class="label">RD Number</span>
+                    <span id="rd-number" class="value"></span>
                 </div>
-                <div class="modal-body">
-                    <ul id="emi-list"></ul>
+
+                <!-- Progress Tile -->
+                <div class="detail-box progress-tile">
+                    <div class="progress-details">
+                        <div class="progress-info">
+                            <span class="label">Instalment Amount</span>
+                            <span id="instalment-amount" class="value"></span>
+                        </div>
+                        <div class="progress-info">
+                            <span class="label">Maturity Amount</span>
+                            <span id="maturity-amount" class="value"></span>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div id="paid-emi-bar" class="progress-segment paid-emi-segment"></div>
+                            <div id="remaining-emi-bar" class="progress-segment remaining-emi-segment"></div>
+                        </div>
+
+                        <div class="progress-labels">
+                            <span id="paid-emi-label" class="paid-emi-label interactive">
+                                Paid: <span id="paid-emi-count"></span>
+                            </span>
+                            <span id="remaining-emi-label" class="remaining-emi-label interactive">
+                                Remaining: <span id="remaining-emi-count"></span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Dates -->
+                <div class="detail-box combined-tile">
+                    <div class="combined-info">
+                        <span class="label">Start Date</span>
+                        <span id="start-date" class="value"></span>
+                    </div>
+                    <div class="combined-info">
+                        <span class="label">Maturity Date</span>
+                        <span id="maturity-date" class="value"></span>
+                    </div>
+                    <div class="combined-info">
+                        <span class="label">Number of Instalments</span>
+                        <span id="total-emi" class="value"></span>
+                    </div>
+                </div>
+
+                <!-- Balance -->
+                <div class="detail-box">
+                    <span class="label">Balance in RD Account</span>
+                    <span id="rd-balance" class="value"></span>
+                </div>
+
+                <!-- Due -->
+                <div class="detail-box combined-tile">
+                    <div class="combined-info">
+                        <span class="label">Due Status</span>
+                        <span id="due-status" class="value"></span>
+                    </div>
+                    <div class="combined-info">
+                        <span class="label">Due Amount</span>
+                        <span id="due-amount" class="value"></span>
+                    </div>
+                </div>
+
+                <p class="maturity-note">
+                    This is an indicative maturity value. Non-payment or delayed
+                    payment of instalments will affect the final maturity amount.Please note that maturity amounts may vary slightly between digital and manual passbooks due to rounding calculations. In all instances, the amount recorded in the manual passbook remains the final authoritative figure. 
+                </p>
+
             </div>
         </div>
     </div>
 
+    <!-- ================= EMI HISTORY MODAL ================= -->
+    <div id="emi-history-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Payment History</h4>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <ul id="emi-list" class="emi-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="script.js"></script>
 
 </body>
