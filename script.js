@@ -18,12 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const paidEmiCount = document.getElementById('paid-emi-count');
     const remainingEmiCount = document.getElementById('remaining-emi-count');
 
-
     const modal = document.getElementById('emi-history-modal');
     const closeModalBtn = document.querySelector('.close-btn');
     const emiList = document.getElementById('emi-list');
 
-    // ✅ Ensure modal always starts hidden
     modal.classList.add('hidden');
 
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/18K6X1q30z7zvi6zrOrrSWZSJpPULhP4INiMnknyVC9A/export?format=csv&gid=643936536';
@@ -43,15 +41,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return cleanName + cleanMobile;
     }
 
+    // HELPER: Convert DD-MM-YYYY string to a numeric timestamp for safe comparison
+    function parseDateToTimestamp(dateStr) {
+        if (!dateStr || typeof dateStr !== 'string') return 0;
+        // Split by '-' or '/'
+        const parts = dateStr.includes('-') ? dateStr.split('-') : dateStr.split('/');
+        if (parts.length !== 3) return 0;
+        
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Months are 0-indexed
+        const year = parseInt(parts[2], 10);
+        
+        return new Date(year, month, day).getTime();
+    }
+
     async function fetchCSVData() {
         try {
             const response = await fetch(CSV_URL);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const csvText = await response.text();
             allAccounts = parseCSV(csvText);
-            console.log("Data loaded successfully:", allAccounts.length, "records");
         } catch (error) {
             console.error('Error fetching CSV data:', error);
             errorMessage.textContent = 'Failed to load data. Please try again later.';
@@ -71,9 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let start = 0;
 
             for (let j = 0; j < lines[i].length; j++) {
-                if (lines[i][j] === '"') {
-                    inQuote = !inQuote;
-                } else if (lines[i][j] === ',' && !inQuote) {
+                if (lines[i][j] === '"') inQuote = !inQuote;
+                else if (lines[i][j] === ',' && !inQuote) {
                     values.push(lines[i].substring(start, j));
                     start = j + 1;
                 }
@@ -85,23 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let j = 0; j < headers.length; j++) {
                     const header = headers[j];
                     const value = values[j].replace(/^"|"$/g, '').trim();
-
                     const numValue = parseFloat(value);
                     obj[header] = isNaN(numValue) ? value : numValue;
                 }
-
                 obj['START_DATE'] = cleanString(values[4]);
-                obj['MATURITY_DATE'] = cleanString(values[12]);
-                const dueStatusValue = parseFloat(values[9]);
-                obj['DUE_STATUS'] = isNaN(dueStatusValue) ? 0 : dueStatusValue;
-                const dueAmountValue = parseFloat(values[10]);
-                obj['DUE_AMOUNT'] = isNaN(dueAmountValue) ? 0 : dueAmountValue;
-
                 obj['PAID_INSATLMET'] = cleanString(values[6]);
-                const instalmentAmountRaw = values[5].replace(/[^0-9.]/g, '');
-                const instalmentAmountValue = parseFloat(instalmentAmountRaw);
-                obj['INSATLMENT_AMOUNT'] = isNaN(instalmentAmountValue) ? 0 : instalmentAmountValue;
-
+                const instalmentAmountRaw = String(values[5]).replace(/[^0-9.]/g, '');
+                obj['INSATLMENT_AMOUNT'] = parseFloat(instalmentAmountRaw) || 0;
                 data.push(obj);
             }
         }
@@ -131,9 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
             loginContainer.classList.add('hidden');
             passbookContainer.classList.remove('hidden');
             displayCustomerInfo(accounts[0]["Customer Name"]);
-            if (accounts.length > 1) {
-                populateAccountSelector(accounts);
-            } else {
+            if (accounts.length > 1) populateAccountSelector(accounts);
+            else {
                 accountSelectorContainer.classList.add('hidden');
                 displayAccountDetails(accounts[0]);
             }
@@ -145,12 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
     accountSelector.addEventListener('change', (e) => {
         const selectedRdNumber = e.target.value;
         const account = currentAccounts.find(acc => acc["RD NUMBER"] === selectedRdNumber);
-        if (account) {
-            displayAccountDetails(account);
-        }
+        if (account) displayAccountDetails(account);
     });
 
-    // New event listeners for the paid and remaining EMI labels
     paidEmiLabel.addEventListener('click', () => {
         if (currentRDNumber) {
             const account = currentAccounts.find(acc => acc["RD NUMBER"] === currentRDNumber);
@@ -165,24 +159,18 @@ document.addEventListener('DOMContentLoaded', () => {
     remainingEmiLabel.addEventListener('click', () => {
         const account = currentAccounts.find(acc => acc["RD NUMBER"] === currentRDNumber);
         if (account) {
-            const paidInstallmentString = String(account.PAID_INSATLMET);
-            const parts = paidInstallmentString.split('/');
-            const paidEmi = parseInt(parts[0], 10);
-            const totalEmi = parseInt(parts[1], 10);
-            const remainingEmi = totalEmi - paidEmi;
+            const parts = String(account.PAID_INSATLMET).split('/');
+            const remainingEmi = parseInt(parts[1], 10) - parseInt(parts[0], 10);
             alert(`You have ${remainingEmi} remaining EMIs to pay.`);
         }
     });
 
-    closeModalBtn.addEventListener('click', () => {
-        modal.classList.add('hidden');
-    });
+    closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
 
     logoutBtn.addEventListener('click', () => {
         passbookContainer.classList.add('hidden');
         loginContainer.classList.remove('hidden');
         passwordInput.value = '';
-        currentAccounts = [];
         modal.classList.add('hidden');
     });
 
@@ -202,17 +190,57 @@ document.addEventListener('DOMContentLoaded', () => {
         displayAccountDetails(accounts[0]);
     }
 
-    function calculateMaturity(principalAmount, totalMonths) {
-        const annualRatePercentage = 12.12;
-        if (isNaN(principalAmount) || isNaN(totalMonths) || totalMonths <= 0) return 'N/A';
-        const years = totalMonths / 12;
-        const r = annualRatePercentage / 400;
-        const n_quarters = (years * 12) / 3;
-        const numerator = Math.pow((1 + r), n_quarters) - 1;
-        const denominator = 1 - Math.pow((1 + r), -1/3);
-        if (denominator === 0) return 'N/A';
-        return Math.round(principalAmount * (numerator / denominator));
+/**
+ * UPDATED MATURITY CALCULATION
+ * Matches Excel Formula: inst_amt * (((1 + i)^n - 1) / (1 - (1 + i)^(-1)))
+ * Results: 4000 @ 12% for 36 months = 1,74,031
+ */
+function calculateMaturity(principalAmount, totalMonths, startDateStr) {
+    if (isNaN(principalAmount) || isNaN(totalMonths) || totalMonths <= 0 || !startDateStr) return 0;
+    
+    // Convert input date to timestamp for reliable comparison
+    const accountStartTimestamp = parseDateToTimestamp(startDateStr);
+    
+    // Define the specific period boundaries (Month index 0-based: 10 = Nov, 11 = Dec)
+    const periodStartTimestamp = new Date(2025, 10, 3).getTime(); 
+    const periodEndTimestamp = new Date(2025, 11, 21).getTime();
+
+    const years = totalMonths / 12;
+    let annualRatePercentage;
+
+    // Determine the Interest Rate based on Date conditions
+    if (accountStartTimestamp < periodStartTimestamp) {
+        annualRatePercentage = 12.12;
+    } 
+    else if (accountStartTimestamp <= periodEndTimestamp) {
+        if (years >= 1 && years < 3) {
+            annualRatePercentage = 10.00;
+        } else if (years >= 3 && years <= 5) {
+            annualRatePercentage = 12.00;
+        } else {
+            annualRatePercentage = 12.12; 
+        }
+    } 
+    else {
+        annualRatePercentage = 10.00; 
     }
+
+    // --- EXACT EXCEL FORMULA IMPLEMENTATION ---
+    // i = monthly interest rate (Annual Rate / 12 / 100)
+    const i = annualRatePercentage / 1200; 
+    const n = totalMonths;
+    
+    // Power factor: (1 + i)^n
+    const powerFactor = Math.pow(1 + i, n);
+    
+    // Excel formula logic: inst_amt * ((powerFactor - 1) / (1 - (1 + i)^-1))
+    const numerator = powerFactor - 1;
+    const denominator = 1 - Math.pow(1 + i, -1);
+    
+    const maturityAmount = principalAmount * (numerator / denominator);
+    
+    return Math.round(maturityAmount);
+}
 
     function displayAccountDetails(account) {
         passbookContent.classList.remove('hidden');
@@ -221,76 +249,64 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('rd-number').textContent = account["RD NUMBER"];
         document.getElementById('start-date').textContent = account.START_DATE || 'N/A';
         document.getElementById('maturity-date').textContent = account.MATURITY_DATE || 'N/A';
+        
         const instalmentAmount = parseFloat(account.INSATLMENT_AMOUNT);
-        document.getElementById('instalment-amount').textContent = !isNaN(instalmentAmount) ? `₹${instalmentAmount.toLocaleString('en-IN')}` : 'N/A';
+        document.getElementById('instalment-amount').textContent = `₹${instalmentAmount.toLocaleString('en-IN')}`;
 
-        const paidInstallmentString = String(account.PAID_INSATLMET);
-        const parts = paidInstallmentString.split('/');
+        const parts = String(account.PAID_INSATLMET).split('/');
         const paidEmi = parseInt(parts[0], 10);
         const totalEmi = parseInt(parts[1], 10);
-        const remainingEmi = totalEmi - paidEmi;
 
-        // Update the progress tile values
-        paidEmiCount.textContent = isNaN(paidEmi) ? 'N/A' : paidEmi;
-        remainingEmiCount.textContent = (isNaN(remainingEmi) || remainingEmi < 0) ? 'N/A' : remainingEmi;
-        const paidPercentage = totalEmi > 0 ? (paidEmi / totalEmi) * 100 : 0;
-        paidEmiBar.style.width = `${paidPercentage}%`;
+        paidEmiCount.textContent = paidEmi;
+        remainingEmiCount.textContent = totalEmi - paidEmi;
+        paidEmiBar.style.width = `${(paidEmi / totalEmi) * 100}%`;
         
-        document.getElementById('total-emi').textContent = isNaN(totalEmi) ? 'N/A' : totalEmi;
-        document.getElementById('rd-balance').textContent = `₹${account["PAID AMOUNT"].toLocaleString('en-IN')}`;
+        document.getElementById('total-emi').textContent = totalEmi;
+        document.getElementById('rd-balance').textContent = `₹${(account["PAID AMOUNT"] || 0).toLocaleString('en-IN')}`;
 
         const dueStatus = document.getElementById('due-status');
         const dueAmount = document.getElementById('due-amount');
         if (account.DUE_STATUS > 0) {
             dueStatus.textContent = account.DUE_STATUS;
-            dueStatus.classList.remove('no-due');
-            dueStatus.classList.add('has-due');
-            const dueAmountValue = account.DUE_AMOUNT;
-            if (dueAmountValue > 0) {
-                dueAmount.textContent = `₹${dueAmountValue.toLocaleString('en-IN')}`;
-            } else {
-                dueAmount.textContent = 'N/A';
-            }
+            dueStatus.className = 'value has-due';
+            dueAmount.textContent = `₹${(account.DUE_AMOUNT || 0).toLocaleString('en-IN')}`;
         } else {
             dueStatus.textContent = '0';
-            dueStatus.classList.remove('has-due');
-            dueStatus.classList.add('no-due');
+            dueStatus.className = 'value no-due';
             dueAmount.textContent = 'N/A';
         }
 
-        const maturityAmount = calculateMaturity(instalmentAmount, totalEmi);
-        const maturityAmountElement = document.getElementById('maturity-amount');
-        maturityAmountElement.textContent = maturityAmount !== 'N/A' ? `₹${maturityAmount.toLocaleString('en-IN')}` : 'N/A';
+        const maturityVal = calculateMaturity(instalmentAmount, totalEmi, account.START_DATE);
+        document.getElementById('maturity-amount').textContent = `₹${maturityVal.toLocaleString('en-IN')}`;
     }
 
     function generateDummyPaymentHistory(account) {
         const history = [];
-        const startDate = new Date(String(account.START_DATE).split('-').reverse().join('-'));
-        let balance = 0;
-        const paidInstallmentString = String(account.PAID_INSATLMET);
-        const parts = paidInstallmentString.split('/');
-        const paidInstallments = parseInt(parts[0], 10);
+        const dateParts = String(account.START_DATE).includes('-') ? 
+                          String(account.START_DATE).split('-') : 
+                          String(account.START_DATE).split('/');
+                          
+        const startDate = new Date(dateParts[2], dateParts[1] - 1, 1);
+        const paidInstallments = parseInt(String(account.PAID_INSATLMET).split('/')[0], 10);
         const instalmentAmount = parseFloat(account.INSATLMENT_AMOUNT);
+        
         for (let i = 0; i < paidInstallments; i++) {
             const paymentDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
-            const monthYear = paymentDate.toLocaleString('en-IN', { month: 'short', year: 'numeric' });
-            balance += instalmentAmount;
-            history.push({ month: monthYear, amount: instalmentAmount, balance: balance });
+            history.push({ 
+                month: paymentDate.toLocaleString('en-IN', { month: 'short', year: 'numeric' }), 
+                amount: instalmentAmount, 
+                balance: (i + 1) * instalmentAmount 
+            });
         }
         return history;
     }
 
     function populateEmiHistory(history) {
-        emiList.innerHTML = '';
-        if (history && history.length > 0) {
-            history.forEach(item => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span>${item.month} - ₹${item.amount.toLocaleString('en-IN')}</span><span class="emi-detail-balance">Balance: ₹${item.balance.toLocaleString('en-IN')}</span>`;
-                emiList.appendChild(li);
-            });
-        } else {
-            emiList.innerHTML = '<li>No payment history available.</li>';
-        }
+        emiList.innerHTML = history.map(item => `
+            <li>
+                <span>${item.month} - ₹${item.amount.toLocaleString('en-IN')}</span>
+                <span class="emi-detail-balance">Balance: ₹${item.balance.toLocaleString('en-IN')}</span>
+            </li>
+        `).join('') || '<li>No payment history available.</li>';
     }
 });
-
