@@ -227,19 +227,14 @@ function calculateMaturity(principalAmount, totalMonths, startDateStr) {
 
     // --- EXACT EXCEL FORMULA IMPLEMENTATION ---
     // i = monthly interest rate (Annual Rate / 12 / 100)
-    const i = annualRatePercentage / 1200; 
-    const n = totalMonths;
-    
-    // Power factor: (1 + i)^n
-    const powerFactor = Math.pow(1 + i, n);
-    
-    // Excel formula logic: inst_amt * ((powerFactor - 1) / (1 - (1 + i)^-1))
-    const numerator = powerFactor - 1;
-    const denominator = 1 - Math.pow(1 + i, -1);
-    
-    const maturityAmount = principalAmount * (numerator / denominator);
-    
-    return Math.round(maturityAmount);
+   // --- UPDATED FORMULA FOR ₹1,33,248 ---
+const i = annualRatePercentage / 1200; 
+const n = totalMonths;
+
+// Standard Formula: P * [((1 + i)^n - 1) / i] * (1 + i)
+const maturityAmount = principalAmount * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+
+return Math.round(maturityAmount);
 }
 
     function displayAccountDetails(account) {
@@ -310,3 +305,4 @@ function calculateMaturity(principalAmount, totalMonths, startDateStr) {
         `).join('') || '<li>No payment history available.</li>';
     }
 });
+
