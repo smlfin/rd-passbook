@@ -198,45 +198,44 @@ document.addEventListener('DOMContentLoaded', () => {
 function calculateMaturity(principalAmount, totalMonths, startDateStr) {
     if (isNaN(principalAmount) || isNaN(totalMonths) || totalMonths <= 0 || !startDateStr) return 0;
     
-    // Convert input date to timestamp for reliable comparison
     const accountStartTimestamp = parseDateToTimestamp(startDateStr);
     
-    // Define the specific period boundaries (Month index 0-based: 10 = Nov, 11 = Dec)
-    const periodStartTimestamp = new Date(2025, 10, 3).getTime(); 
-    const periodEndTimestamp = new Date(2025, 11, 21).getTime();
+    // Define Boundaries
+    const nov3_2025 = new Date(2025, 10, 3).getTime(); 
+    const dec22_2025 = new Date(2025, 11, 22).getTime();
+    const jan1_2026 = new Date(2026, 0, 1).getTime();
 
     const years = totalMonths / 12;
     let annualRatePercentage;
 
-    // Determine the Interest Rate based on Date conditions
-    if (accountStartTimestamp < periodStartTimestamp) {
+    // 1. Before Nov 3, 2025
+    if (accountStartTimestamp < nov3_2025) {
         annualRatePercentage = 12.12;
     } 
-    else if (accountStartTimestamp <= periodEndTimestamp) {
-        if (years >= 1 && years < 3) {
-            annualRatePercentage = 10.00;
-        } else if (years >= 3 && years <= 5) {
-            annualRatePercentage = 12.00;
-        } else {
-            annualRatePercentage = 12.12; 
-        }
+    // 2. Nov 3, 2025 – Dec 21, 2025
+    else if (accountStartTimestamp < dec22_2025) {
+        if (years >= 1 && years < 3) annualRatePercentage = 10.00;
+        else if (years >= 3 && years <= 5) annualRatePercentage = 12.00;
+        else annualRatePercentage = 12.12; 
     } 
+    // 3. Dec 22, 2025 – Dec 31, 2025
+    else if (accountStartTimestamp < jan1_2026) {
+        if (years >= 1 && years < 3) annualRatePercentage = 10.00;
+        else if (years >= 3 && years <= 5) annualRatePercentage = 11.50;
+        else annualRatePercentage = 10.00;
+    }
+    // 4. Jan 1, 2026 onwards
     else {
         annualRatePercentage = 10.00; 
     }
 
-    // --- EXACT EXCEL FORMULA IMPLEMENTATION ---
-    // i = monthly interest rate (Annual Rate / 12 / 100)
-   // --- UPDATED FORMULA FOR ₹1,33,248 ---
-const i = annualRatePercentage / 1200; 
-const n = totalMonths;
-
-// Standard Formula: P * [((1 + i)^n - 1) / i] * (1 + i)
-const maturityAmount = principalAmount * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
-
-return Math.round(maturityAmount);
+    // Standard Banking Formula for ₹1,33,248
+    const i = annualRatePercentage / 1200; 
+    const n = totalMonths;
+    const maturityAmount = principalAmount * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+    
+    return Math.round(maturityAmount);
 }
-
     function displayAccountDetails(account) {
         passbookContent.classList.remove('hidden');
         currentRDNumber = account["RD NUMBER"];
@@ -305,4 +304,5 @@ return Math.round(maturityAmount);
         `).join('') || '<li>No payment history available.</li>';
     }
 });
+
 
