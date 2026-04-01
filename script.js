@@ -201,9 +201,10 @@ function calculateMaturity(principalAmount, totalMonths, startDateStr) {
     const accountStartTimestamp = parseDateToTimestamp(startDateStr);
     
     // Define Boundaries
-    const nov3_2025 = new Date(2025, 10, 3).getTime(); 
+    const nov3_2025  = new Date(2025, 10,  3).getTime();
     const dec22_2025 = new Date(2025, 11, 22).getTime();
-    const jan1_2026 = new Date(2026, 0, 1).getTime();
+    const jan1_2026  = new Date(2026,  0,  1).getTime();
+    const apr1_2026  = new Date(2026,  3,  1).getTime();
 
     const years = totalMonths / 12;
     let annualRatePercentage;
@@ -211,26 +212,33 @@ function calculateMaturity(principalAmount, totalMonths, startDateStr) {
     // 1. Before Nov 3, 2025
     if (accountStartTimestamp < nov3_2025) {
         annualRatePercentage = 12.12;
-    } 
+    }
     // 2. Nov 3, 2025 – Dec 21, 2025
     else if (accountStartTimestamp < dec22_2025) {
-        if (years >= 1 && years < 3) annualRatePercentage = 10.00;
+        if (years >= 1 && years < 3)      annualRatePercentage = 10.00;
         else if (years >= 3 && years <= 5) annualRatePercentage = 12.00;
-        else annualRatePercentage = 12.12; 
-    } 
+        else                               annualRatePercentage = 12.12;
+    }
     // 3. Dec 22, 2025 – Dec 31, 2025
     else if (accountStartTimestamp < jan1_2026) {
-        if (years >= 1 && years < 3) annualRatePercentage = 10.00;
+        if (years >= 1 && years < 3)      annualRatePercentage = 10.00;
         else if (years >= 3 && years <= 5) annualRatePercentage = 11.50;
-        else annualRatePercentage = 10.00;
+        else                               annualRatePercentage = 10.00;
     }
-    // 4. Jan 1, 2026 onwards
+    // 4. Jan 1, 2026 – Mar 31, 2026
+    else if (accountStartTimestamp < apr1_2026) {
+        annualRatePercentage = 10.00;
+    }
+    // 5. Apr 1, 2026 onwards
     else {
-        annualRatePercentage = 10.00; 
+        if (years === 1)                   annualRatePercentage = 10.00;
+        else if (years === 2)              annualRatePercentage = 11.00;
+        else if (years >= 3 && years <= 5) annualRatePercentage = 12.00;
+        else                               annualRatePercentage = 10.00;
     }
 
-    // Standard Banking Formula for ₹1,33,248
-    const i = annualRatePercentage / 1200; 
+    // Standard Banking Formula
+    const i = annualRatePercentage / 1200;
     const n = totalMonths;
     const maturityAmount = principalAmount * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
     
