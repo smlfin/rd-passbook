@@ -3,169 +3,406 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Sangeeth FinTrack – The Digital Passbook</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-
-    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-    <!-- ================= LOGIN ================= -->
-    <div id="login-container" class="container">
-        <h1 class="logo-text">Sangeeth FinTrack</h1>
-        <h2 class="sub-heading">The Digital Passbook</h2>
-
-        <form id="login-form">
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Password"
-                    required
-                />
-
-                <div class="show-password-container">
-                    <input type="checkbox" id="show-password" />
-                    <label for="show-password">Show Password</label>
-                </div>
-
-                <p class="instructions">
-                    Password is the first 4 letters of your name (not case-sensitive)
-                    followed by the last 4 digits of your mobile number.
-                    <br>(Example: <strong>SANG3210</strong>)
-                </p>
-            </div>
-
-            <button type="submit" class="btn">Login</button>
-            <p id="error-message" class="error-message"></p>
-        </form>
+<!-- ================= LOADING SCREEN ================= -->
+<div id="loading-screen">
+    <div class="loader-content">
+        <div class="loader-logo">SF</div>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
     </div>
+</div>
 
-    <!-- ================= PASSBOOK ================= -->
-    <div id="passbook-container" class="container hidden">
-
-        <header class="passbook-header">
+<!-- ================= LOGIN ================= -->
+<div id="login-container" class="hidden">
+    <div class="login-left">
+        <div class="login-brand">
+            <span class="brand-mark">SF</span>
             <div>
-                <h1 class="logo-text">Sangeeth FinTrack</h1>
-                <h2 class="sub-heading">The Digital Passbook</h2>
+                <div class="brand-name">Sangeeth FinTrack</div>
+                <div class="brand-tagline">The Digital Passbook</div>
             </div>
-            <button id="logout-btn" class="btn">Logout</button>
-        </header>
-
-        <!-- Customer Info -->
-        <div id="customer-info" class="customer-info"></div>
-
-        <!-- Account Selector -->
-        <div id="account-selector-container" class="hidden">
-            <h3>Select your RD account</h3>
-            <select id="account-selector"></select>
         </div>
-
-        <!-- Passbook Content -->
-        <div id="passbook-content" class="passbook-content hidden">
-
-            <div class="account-details-grid">
-
-                <div class="detail-box">
-                    <span class="label">RD Number</span>
-                    <span id="rd-number" class="value"></span>
-                </div>
-
-                <!-- Progress Tile -->
-                <div class="detail-box progress-tile">
-                    <div class="progress-details">
-                        <div class="progress-info">
-                            <span class="label">Instalment Amount</span>
-                            <span id="instalment-amount" class="value"></span>
-                        </div>
-                        <div class="progress-info">
-                            <span class="label">Maturity Amount</span>
-                            <span id="maturity-amount" class="value"></span>
-                        </div>
-                    </div>
-
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div id="paid-emi-bar" class="progress-segment paid-emi-segment"></div>
-                            <div id="remaining-emi-bar" class="progress-segment remaining-emi-segment"></div>
-                        </div>
-
-                        <div class="progress-labels">
-                            <span id="paid-emi-label" class="paid-emi-label interactive">
-                                Paid: <span id="paid-emi-count"></span>
-                            </span>
-                            <span id="remaining-emi-label" class="remaining-emi-label interactive">
-                                Remaining: <span id="remaining-emi-count"></span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dates -->
-                <div class="detail-box combined-tile">
-                    <div class="combined-info">
-                        <span class="label">Start Date</span>
-                        <span id="start-date" class="value"></span>
-                    </div>
-                    <div class="combined-info">
-                        <span class="label">Maturity Date</span>
-                        <span id="maturity-date" class="value"></span>
-                    </div>
-                    <div class="combined-info">
-                        <span class="label">Number of Instalments</span>
-                        <span id="total-emi" class="value"></span>
-                    </div>
-                </div>
-
-                <!-- Balance -->
-                <div class="detail-box">
-                    <span class="label">Balance in RD Account</span>
-                    <span id="rd-balance" class="value"></span>
-                </div>
-
-                <!-- Due -->
-                <div class="detail-box combined-tile">
-                    <div class="combined-info">
-                        <span class="label">Due Status</span>
-                        <span id="due-status" class="value"></span>
-                    </div>
-                    <div class="combined-info">
-                        <span class="label">Due Amount</span>
-                        <span id="due-amount" class="value"></span>
-                    </div>
-                </div>
-
-                <p class="maturity-note">
-                    This is an indicative maturity value. Non-payment or delayed
-                    payment of instalments will affect the final maturity amount.Please note that maturity amounts may vary slightly between digital and manual passbooks due to rounding calculations. In all instances, the amount recorded in the manual passbook remains the final authoritative figure. 
-                </p>
-
+        <div class="login-hero">
+            <h1>Your money,<br><em>always in view.</em></h1>
+            <p>Track your Recurring Deposits, monitor growth, and stay ahead of every instalment — beautifully.</p>
+            <div class="login-stats">
+                <div class="stat"><span class="stat-val">100%</span><span class="stat-label">Secure</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-val">Live</span><span class="stat-label">Balance</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat"><span class="stat-val">Smart</span><span class="stat-label">Insights</span></div>
             </div>
         </div>
     </div>
 
-    <!-- ================= EMI HISTORY MODAL ================= -->
-    <div id="emi-history-modal" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Payment History</h4>
-                <span class="close-btn">&times;</span>
-            </div>
-            <div class="modal-body">
-                <ul id="emi-list" class="emi-list"></ul>
-            </div>
+    <div class="login-right">
+        <div class="login-card">
+            <h2>Welcome back</h2>
+            <p class="login-sub">Sign in to view your passbook</p>
+
+            <form id="login-form">
+                <div class="field-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password"/>
+                        <button type="button" class="eye-btn" id="toggle-password">
+                            <svg id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <svg id="eye-closed" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        </button>
+                    </div>
+                    <p class="hint">First 4 letters of name + last 4 digits of mobile &nbsp;•&nbsp; e.g. <strong>SANG3210</strong></p>
+                </div>
+
+                <button type="submit" class="btn-primary" id="login-btn">
+                    <span>Sign In</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <p id="error-message" class="error-msg hidden">Invalid password. Please try again.</p>
+            </form>
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="script.js"></script>
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboard" class="hidden">
 
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-mark small">SF</span>
+            <span class="sidebar-brand-name">FinTrack</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-tab="overview">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span>Overview</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="growth">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                <span>Growth</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="history">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>History</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="calculator">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                <span>Calculator</span>
+            </a>
+            <a href="#" class="nav-item" data-tab="forecast">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-8"/></svg>
+                <span>Forecast</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button id="logout-btn" class="logout-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content">
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="hamburger" id="hamburger">
+                    <span></span><span></span><span></span>
+                </button>
+                <div>
+                    <div id="greeting" class="greeting"></div>
+                    <div id="topbar-date" class="topbar-date"></div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div id="account-selector-container" class="hidden">
+                    <select id="account-selector"></select>
+                </div>
+                <div class="avatar" id="user-avatar">–</div>
+            </div>
+        </div>
+
+        <!-- ====== TAB: OVERVIEW ====== -->
+        <div id="tab-overview" class="tab-content active">
+
+            <!-- Hero Cards -->
+            <div class="hero-cards">
+                <div class="hero-card primary-card">
+                    <div class="hero-card-label">Maturity Value</div>
+                    <div class="hero-card-value" id="hc-maturity">–</div>
+                    <div class="hero-card-sub" id="hc-maturity-date">Matures on –</div>
+                    <div class="card-glow"></div>
+                </div>
+                <div class="hero-card">
+                    <div class="hero-card-label">Balance Deposited</div>
+                    <div class="hero-card-value" id="hc-balance">–</div>
+                    <div class="hero-card-sub" id="hc-paid">– instalments paid</div>
+                </div>
+                <div class="hero-card">
+                    <div class="hero-card-label">Interest Earned</div>
+                    <div class="hero-card-value" id="hc-interest">–</div>
+                    <div class="hero-card-sub" id="hc-rate">@ –% p.a.</div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Instalment Progress</h3>
+                    <span id="progress-pct" class="badge">0%</span>
+                </div>
+                <div class="big-progress-wrap">
+                    <div class="big-progress-bar">
+                        <div id="big-progress-fill" class="big-progress-fill"></div>
+                    </div>
+                    <div class="progress-meta">
+                        <div class="pm-item">
+                            <span class="pm-dot paid-dot"></span>
+                            <span id="pm-paid">0 paid</span>
+                        </div>
+                        <div class="pm-item clickable" id="remaining-click">
+                            <span class="pm-dot remain-dot"></span>
+                            <span id="pm-remaining">0 remaining</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="instalment-grid" id="instalment-grid"></div>
+            </div>
+
+            <!-- Info Grid -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📅</div>
+                    <div class="info-label">Start Date</div>
+                    <div class="info-value" id="info-start">–</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🏁</div>
+                    <div class="info-label">Maturity Date</div>
+                    <div class="info-value" id="info-maturity">–</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">💳</div>
+                    <div class="info-label">Monthly Instalment</div>
+                    <div class="info-value" id="info-instalment">–</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🔢</div>
+                    <div class="info-label">RD Number</div>
+                    <div class="info-value" id="info-rdnum">–</div>
+                </div>
+                <div class="info-card" id="due-card">
+                    <div class="info-icon">⚠️</div>
+                    <div class="info-label">Due Status</div>
+                    <div class="info-value" id="info-due">–</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <div class="info-label">Total Instalments</div>
+                    <div class="info-value" id="info-total-emi">–</div>
+                </div>
+            </div>
+
+            <p class="maturity-note">⚠️ Indicative maturity value. Non-payment or delayed instalments will affect the final amount. Manual passbook remains the authoritative figure.</p>
+        </div>
+
+        <!-- ====== TAB: GROWTH ====== -->
+        <div id="tab-growth" class="tab-content hidden">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Deposit vs Interest Growth</h3>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="growth-chart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <span><span class="leg-dot dep-dot"></span>Deposited</span>
+                    <span><span class="leg-dot int-dot"></span>Interest</span>
+                    <span><span class="leg-dot mat-dot"></span>Maturity Value</span>
+                </div>
+            </div>
+            <div class="growth-summary">
+                <div class="gs-card">
+                    <div class="gs-label">Total Deposited</div>
+                    <div class="gs-value" id="gs-deposited">–</div>
+                </div>
+                <div class="gs-card accent">
+                    <div class="gs-label">Total Interest</div>
+                    <div class="gs-value" id="gs-interest">–</div>
+                </div>
+                <div class="gs-card">
+                    <div class="gs-label">Interest Rate</div>
+                    <div class="gs-value" id="gs-return">–</div>
+                </div>
+                <div class="gs-card">
+                    <div class="gs-label">Months Left</div>
+                    <div class="gs-value" id="gs-months-left">–</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== TAB: HISTORY ====== -->
+        <div id="tab-history" class="tab-content hidden">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Payment History</h3>
+                    <span id="history-count" class="badge">0 payments</span>
+                </div>
+                <div class="history-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="history-search" placeholder="Search by month or year…">
+                </div>
+                <ul id="history-list" class="history-list"></ul>
+            </div>
+        </div>
+
+        <!-- ====== TAB: CALCULATOR ====== -->
+        <div id="tab-calculator" class="tab-content hidden">
+            <div class="calc-grid">
+                <div class="section-card">
+                    <div class="section-header"><h3>RD Maturity Calculator</h3></div>
+                    <div class="calc-fields">
+                        <div class="calc-field">
+                            <label>Monthly Deposit (₹)</label>
+                            <input type="number" id="calc-monthly" placeholder="e.g. 5000" min="100">
+                        </div>
+                        <div class="calc-field">
+                            <label>Tenure</label>
+                            <div class="tenure-pills" id="tenure-pills">
+                                <button class="pill active" data-months="12">1 Yr</button>
+                                <button class="pill" data-months="24">2 Yrs</button>
+                                <button class="pill" data-months="36">3 Yrs</button>
+                                <button class="pill" data-months="48">4 Yrs</button>
+                                <button class="pill" data-months="60">5 Yrs</button>
+                            </div>
+                        </div>
+                        <div class="calc-field">
+                            <label>Interest Rate (%)</label>
+                            <input type="number" id="calc-rate" value="10" step="0.5" min="1" max="20">
+                        </div>
+                    </div>
+                    <div class="calc-result-box" id="calc-result-box">
+                        <div class="cr-row">
+                            <span>Monthly Deposit</span>
+                            <strong id="cr-monthly">–</strong>
+                        </div>
+                        <div class="cr-row">
+                            <span>Total Deposited</span>
+                            <strong id="cr-deposited">–</strong>
+                        </div>
+                        <div class="cr-row accent-row">
+                            <span>Interest Earned</span>
+                            <strong id="cr-interest">–</strong>
+                        </div>
+                        <div class="cr-row total-row">
+                            <span>Maturity Amount</span>
+                            <strong id="cr-maturity">–</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <div class="section-header"><h3>Goal Planner</h3></div>
+                    <div class="calc-fields">
+                        <div class="calc-field">
+                            <label>Target Amount (₹)</label>
+                            <input type="number" id="goal-target" placeholder="e.g. 1,00,000" min="1000">
+                        </div>
+                        <div class="calc-field">
+                            <label>Tenure</label>
+                            <div class="tenure-pills" id="goal-tenure-pills">
+                                <button class="pill active" data-months="12">1 Yr</button>
+                                <button class="pill" data-months="24">2 Yrs</button>
+                                <button class="pill" data-months="36">3 Yrs</button>
+                                <button class="pill" data-months="48">4 Yrs</button>
+                                <button class="pill" data-months="60">5 Yrs</button>
+                            </div>
+                        </div>
+                        <div class="calc-field">
+                            <label>Interest Rate (%)</label>
+                            <input type="number" id="goal-rate" value="10" step="0.5" min="1" max="20">
+                        </div>
+                    </div>
+                    <div class="calc-result-box" id="goal-result-box">
+                        <div class="cr-row total-row">
+                            <span>Required Monthly Deposit</span>
+                            <strong id="gr-monthly">–</strong>
+                        </div>
+                        <div class="cr-row">
+                            <span>Total You'll Deposit</span>
+                            <strong id="gr-total">–</strong>
+                        </div>
+                        <div class="cr-row accent-row">
+                            <span>Interest Earned</span>
+                            <strong id="gr-interest">–</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== TAB: FORECAST ====== -->
+        <div id="tab-forecast" class="tab-content hidden">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3>Monthly Forecast Timeline</h3>
+                    <span class="badge" id="forecast-remaining-badge">–</span>
+                </div>
+                <div class="forecast-intro">
+                    <p>Upcoming instalments and projected balance for your active RD account.</p>
+                </div>
+                <div id="forecast-table-wrap" class="forecast-table-wrap">
+                    <table class="forecast-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Month</th>
+                                <th>Instalment</th>
+                                <th>Cumulative Deposit</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="forecast-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ================= MOBILE NAV ================= -->
+<nav class="mobile-nav" id="mobile-nav">
+    <a href="#" class="mnav-item active" data-tab="overview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>Overview</span>
+    </a>
+    <a href="#" class="mnav-item" data-tab="growth">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        <span>Growth</span>
+    </a>
+    <a href="#" class="mnav-item" data-tab="history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>History</span>
+    </a>
+    <a href="#" class="mnav-item" data-tab="calculator">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+        <span>Calc</span>
+    </a>
+    <a href="#" class="mnav-item" data-tab="forecast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-8"/></svg>
+        <span>Forecast</span>
+    </a>
+</nav>
+
+<script src="script.js"></script>
 </body>
 </html>
