@@ -58,6 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return cleanStr(name).slice(0, 4).toLowerCase() + cleanStr(mobile).slice(-4);
     }
 
+    // Sheet: "DUE AMOUNT" = number of dues, "Dues" = total due in ₹ (not DUE_STATUS / DUE_AMOUNT)
+    function getDueInfo(acc) {
+        const count = Number(acc['DUE AMOUNT'] ?? acc.DUE_STATUS ?? 0) || 0;
+        const amount = Number(acc.Dues ?? 0) || 0;
+        return {
+            count: count > 0 ? count : (amount > 0 ? 1 : 0),
+            amount
+        };
+    }
+
     // ===================== MATURITY CALCULATION =====================
     function calculateMaturity(principal, totalMonths, startDateStr) {
         if (isNaN(principal) || isNaN(totalMonths) || totalMonths <= 0 || !startDateStr) return 0;
@@ -312,9 +322,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const dueCard = document.getElementById('due-card');
         const dueVal  = document.getElementById('info-due');
-        if (acc.DUE_STATUS > 0) {
+        const dueInfo = getDueInfo(acc);
+        if (dueInfo.count > 0 || dueInfo.amount > 0) {
             dueCard.className = 'info-card has-due';
-            dueVal.textContent = acc.DUE_STATUS + ' due \u2022 ' + fmt(acc.DUE_AMOUNT || 0);
+            const label = dueInfo.count === 1 ? '1 due' : dueInfo.count + ' dues';
+            dueVal.textContent = label + ' \u2022 ' + fmt(dueInfo.amount);
         } else {
             dueCard.className = 'info-card no-due';
             dueVal.textContent = 'No dues \u2713';
